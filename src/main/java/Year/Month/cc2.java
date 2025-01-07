@@ -4,13 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Set;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 import io.github.bonigarcia.wdm.WebDriverManager;
-
 
 public class cc2 {
     public static void main(String[] args) {
@@ -44,8 +39,8 @@ public class cc2 {
                 }
             }
 
-            // Save cookies to a file (without using local paths)
-            saveCookiesToFile(cookies);
+            // Save cookies to a variable (without using a local file path)
+            saveCookiesToMemory(cookies);
 
             System.out.println("Cookies have been saved.");
 
@@ -60,36 +55,33 @@ public class cc2 {
         }
     }
 
-    private static void saveCookiesToFile(Set<Cookie> cookies) {
+    private static void saveCookiesToMemory(Set<Cookie> cookies) {
         try {
-            // Modify this to save the cookies without using a local file path
-            // You could either push it directly to Git or handle it in-memory
-            String cookiesJson = "[";
+            // Convert cookies to JSON-like string in memory
+            StringBuilder cookiesJson = new StringBuilder("[");
 
             int count = 0;
             for (Cookie cookie : cookies) {
-                cookiesJson += "{";
-                cookiesJson += "\"name\": \"" + cookie.getName() + "\", ";
-                cookiesJson += "\"value\": \"" + cookie.getValue() + "\", ";
-                cookiesJson += "\"domain\": \"" + cookie.getDomain() + "\", ";
-                cookiesJson += "\"path\": \"" + cookie.getPath() + "\", ";
-                cookiesJson += "\"secure\": " + cookie.isSecure() + ", ";
-                cookiesJson += "\"httpOnly\": " + cookie.isHttpOnly();
+                cookiesJson.append("{");
+                cookiesJson.append("\"name\": \"").append(cookie.getName()).append("\", ");
+                cookiesJson.append("\"value\": \"").append(cookie.getValue()).append("\", ");
+                cookiesJson.append("\"domain\": \"").append(cookie.getDomain()).append("\", ");
+                cookiesJson.append("\"path\": \"").append(cookie.getPath()).append("\", ");
+                cookiesJson.append("\"secure\": ").append(cookie.isSecure()).append(", ");
+                cookiesJson.append("\"httpOnly\": ").append(cookie.isHttpOnly());
                 if (cookie.getExpiry() != null) {
-                    cookiesJson += ", \"expiry\": \"" + cookie.getExpiry().toString() + "\"";
+                    cookiesJson.append(", \"expiry\": \"").append(cookie.getExpiry().toString()).append("\"");
                 }
-                cookiesJson += "}";
+                cookiesJson.append("}");
                 if (++count < cookies.size()) {
-                    cookiesJson += ", ";
+                    cookiesJson.append(", ");
                 }
             }
 
-            cookiesJson += "]";
+            cookiesJson.append("]");
 
-            // You can either print, send it over a network, or push it to Git directly
-            System.out.println(cookiesJson);
-            // Handle cookiesJson accordingly (e.g., push directly to Git)
-
+            // Print cookiesJson or handle it directly (e.g., push it to Git)
+            System.out.println(cookiesJson.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,5 +103,3 @@ public class cc2 {
         }
     }
 }
-
-
