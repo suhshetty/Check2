@@ -105,7 +105,7 @@ public class cc2 {
             // Git operations to add, commit, and push the changes
             new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git add cookies.json").inheritIO().start().waitFor();
             new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git commit -m \"Updated cookies.json with new cookie value\"").inheritIO().start().waitFor();
-            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git push origin master").inheritIO().start().waitFor();
+            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git push origin main").inheritIO().start().waitFor();
 
             System.out.println("Changes have been committed and pushed to the Git repository.");
         } catch (Exception e) {
