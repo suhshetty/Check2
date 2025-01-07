@@ -4,6 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Set;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -39,8 +41,8 @@ public class cc2 {
                 }
             }
 
-            // Save cookies to a variable (without using a local file path)
-            saveCookiesToMemory(cookies);
+            // Save cookies to a file
+            saveCookiesToFile(cookies);
 
             System.out.println("Cookies have been saved.");
 
@@ -55,9 +57,13 @@ public class cc2 {
         }
     }
 
-    private static void saveCookiesToMemory(Set<Cookie> cookies) {
+    private static void saveCookiesToFile(Set<Cookie> cookies) {
         try {
-            // Convert cookies to JSON-like string in memory
+            // Define the full path to save cookies.json locally at the specified directory
+            String filePath = "C:\\Users\\suhsh\\eclipse-workspace\\Month2\\cookies.json";
+            FileWriter file = new FileWriter(filePath);
+
+            // Convert cookies to JSON-like format
             StringBuilder cookiesJson = new StringBuilder("[");
 
             int count = 0;
@@ -80,20 +86,24 @@ public class cc2 {
 
             cookiesJson.append("]");
 
-            // Print cookiesJson or handle it directly (e.g., push it to Git)
-            System.out.println(cookiesJson.toString());
-        } catch (Exception e) {
+            // Write cookies to the file at the specified location
+            file.write(cookiesJson.toString());
+            file.close();
+
+            System.out.println("Cookies have been saved to: " + filePath);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     private static void commitAndPushToGit() {
         try {
-            // Skip the file path part here, and directly handle the commit logic
+            // Path to the Git repository
             String repoDirectory = "C:\\Users\\suhsh\\eclipse-workspace\\Month2";
 
-            // Git operations (just like in your existing method)
-            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git add .").inheritIO().start().waitFor();
+            // Git operations to add, commit, and push the changes
+            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git add cookies.json").inheritIO().start().waitFor();
             new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git commit -m \"Updated cookies.json with new cookie value\"").inheritIO().start().waitFor();
             new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git push origin master").inheritIO().start().waitFor();
 
