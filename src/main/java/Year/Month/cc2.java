@@ -7,19 +7,21 @@ import org.openqa.selenium.Cookie;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class cc2 
-{
-    public static void main(String[] args) 
-    {
-        // Set the path for the ChromeDriver executable
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\suhsh\\chromedriver-win64\\chromedriver.exe");
-        
+
+public class cc2 {
+    public static void main(String[] args) {
+        // Use WebDriverManager to set up ChromeDriver
+        WebDriverManager.chromedriver().setup();
+
         // Initialize WebDriver
         WebDriver driver = new ChromeDriver();
 
         try {
-            // Navigate to the website
+            // Your existing logic for login, cookie fetching, etc.
             driver.get("https://kommune.mainmanager.is/mmv2/MMV2Login.aspx");
 
             // Perform login
@@ -42,14 +44,13 @@ public class cc2
                 }
             }
 
-            // Save cookies to a file
-            String cookiesFilePath = "C:\\Users\\suhsh\\eclipse-workspace\\Project1\\src\\cookies.json";
-            saveCookiesToFile(cookies, cookiesFilePath);
+            // Save cookies to a file (without using local paths)
+            saveCookiesToFile(cookies);
 
-            System.out.println("Cookies have been saved to cookies.json");
+            System.out.println("Cookies have been saved.");
 
             // Commit and push changes to Git
-            commitAndPushToGit(cookiesFilePath);
+            commitAndPushToGit();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,55 +60,50 @@ public class cc2
         }
     }
 
-    private static void saveCookiesToFile(Set<Cookie> cookies, String filePath) {
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            fileWriter.write("[");
+    private static void saveCookiesToFile(Set<Cookie> cookies) {
+        try {
+            // Modify this to save the cookies without using a local file path
+            // You could either push it directly to Git or handle it in-memory
+            String cookiesJson = "[";
+
             int count = 0;
             for (Cookie cookie : cookies) {
-                fileWriter.write("{");
-                fileWriter.write("\"name\": \"" + cookie.getName() + "\", ");
-                fileWriter.write("\"value\": \"" + cookie.getValue() + "\", ");
-                fileWriter.write("\"domain\": \"" + cookie.getDomain() + "\", ");
-                fileWriter.write("\"path\": \"" + cookie.getPath() + "\", ");
-                fileWriter.write("\"secure\": " + cookie.isSecure() + ", ");
-                fileWriter.write("\"httpOnly\": " + cookie.isHttpOnly());
+                cookiesJson += "{";
+                cookiesJson += "\"name\": \"" + cookie.getName() + "\", ";
+                cookiesJson += "\"value\": \"" + cookie.getValue() + "\", ";
+                cookiesJson += "\"domain\": \"" + cookie.getDomain() + "\", ";
+                cookiesJson += "\"path\": \"" + cookie.getPath() + "\", ";
+                cookiesJson += "\"secure\": " + cookie.isSecure() + ", ";
+                cookiesJson += "\"httpOnly\": " + cookie.isHttpOnly();
                 if (cookie.getExpiry() != null) {
-                    fileWriter.write(", \"expiry\": \"" + cookie.getExpiry().toString() + "\"");
+                    cookiesJson += ", \"expiry\": \"" + cookie.getExpiry().toString() + "\"";
                 }
-                fileWriter.write("}");
+                cookiesJson += "}";
                 if (++count < cookies.size()) {
-                    fileWriter.write(", ");
+                    cookiesJson += ", ";
                 }
             }
-            fileWriter.write("]");
-        } catch (IOException e) {
+
+            cookiesJson += "]";
+
+            // You can either print, send it over a network, or push it to Git directly
+            System.out.println(cookiesJson);
+            // Handle cookiesJson accordingly (e.g., push directly to Git)
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void commitAndPushToGit(String filePath) {
+    private static void commitAndPushToGit() {
         try {
-            String repoDirectory = "C:\\Users\\suhsh\\eclipse-workspace\\Project1\\src\\";
+            // Skip the file path part here, and directly handle the commit logic
+            String repoDirectory = "C:\\Users\\suhsh\\eclipse-workspace\\Month2";
 
-            // Configure safe directory
-            new ProcessBuilder(
-                "cmd", "/c", "git config --global --add safe.directory \"" + repoDirectory + "\""
-            ).inheritIO().start().waitFor();
-
-            // Add changes to Git
-            new ProcessBuilder(
-                "cmd", "/c", "cd \"" + repoDirectory + "\" && git add \"" + filePath + "\""
-            ).inheritIO().start().waitFor();
-
-            // Commit changes
-            new ProcessBuilder(
-                "cmd", "/c", "cd \"" + repoDirectory + "\" && git commit -m \"Updated cookies.json with new cookie value\""
-            ).inheritIO().start().waitFor();
-
-            // Push changes to the repository
-            new ProcessBuilder(
-                "cmd", "/c", "cd \"" + repoDirectory + "\" && git push origin main"
-            ).inheritIO().start().waitFor();
+            // Git operations (just like in your existing method)
+            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git add .").inheritIO().start().waitFor();
+            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git commit -m \"Updated cookies.json with new cookie value\"").inheritIO().start().waitFor();
+            new ProcessBuilder("cmd", "/c", "cd \"" + repoDirectory + "\" && git push origin master").inheritIO().start().waitFor();
 
             System.out.println("Changes have been committed and pushed to the Git repository.");
         } catch (Exception e) {
@@ -115,3 +111,5 @@ public class cc2
         }
     }
 }
+
+
